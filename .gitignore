@@ -8,9 +8,8 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
+# nestjs
+/dist
 
 # production
 /build
@@ -34,3 +33,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.pnpm-store
