@@ -1,6 +1,9 @@
 name: Deploy Backend to Vercel
 
 on:
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
       environment:
@@ -18,7 +21,7 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: ${{ inputs.environment || 'prod' }}
     name: Deploy Backend to Vercel
     steps:
       - uses: actions/checkout@v4

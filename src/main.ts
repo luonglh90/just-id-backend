@@ -9,8 +9,13 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   // CORS
+  const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type'],
     maxAge: 86400,
