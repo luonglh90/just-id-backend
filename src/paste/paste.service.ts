@@ -135,33 +135,17 @@ export class PasteService {
   }
 
   /**
-   * Get slot availability and next expiry info.
+   * Get slot availability info.
+   * Uses DBSIZE as a fast approximation (includes seen:* keys too,
+   * but avoids expensive SCAN on serverless).
    */
-  async getStatus(): Promise<{
-    used: number;
-  }> {
-    const usedKeys = await this.scanPasteKeys();
-    return { used: usedKeys.length };
-  }
-
-  /**
-   * Scan for all paste:* keys.
-   */
-  private async scanPasteKeys(): Promise<string[]> {
+  async getStatus(): Promise<{ used: number }> {
     const redis = this.redisService.getClient();
-    const keys: string[] = [];
-    let cursor = '0';
-
-    do {
-      const result = await redis.scan(Number(cursor), {
-        match: 'paste:*',
-        count: 1000,
-      });
-      cursor = String(result[0]);
-      keys.push(...result[1]);
-    } while (cursor !== '0');
-
-    return keys;
+    const dbsize = await redis.dbsize();
+    // Each paste creates 2 keys: paste:{id} + seen:{id}
+    // Active pastes ≈ dbsize / 2 (rough but fast)
+    const used = Math.max(0, Math.floor(dbsize / 2));
+    return { used };
   }
 
   /**

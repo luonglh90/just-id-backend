@@ -14,6 +14,10 @@ async function bootstrap() {
     .map((o) => o.trim())
     .filter(Boolean);
 
+  if (allowedOrigins.length === 0) {
+    allowedOrigins.push('http://localhost:5173');
+  }
+
   app.enableCors({
     origin: allowedOrigins,
     methods: ['GET', 'POST', 'OPTIONS'],
