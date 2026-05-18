@@ -61,6 +61,6 @@ export class PasteController {
       );
     }
 
-    return this.pasteService.findOne(id);
+    return this.pasteService.findOne(id.toUpperCase());
   }
 }
